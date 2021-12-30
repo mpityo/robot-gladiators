@@ -8,32 +8,33 @@ var enemyHealth = 50;
 var enemyAttack = 12;
 
 var fight = function(enemyName) {
-	window.alert("Welcome to Robot Gladiators!");
-	
 	// prompt user to either fight or skip the battle
 	var promptFight = window.prompt("Would you like to FIGHT or SKIP this battle?");
 	var fightOrSkip = promptFight.toLowerCase();
 	
 	// player decides to fight
 	if (fightOrSkip === "fight") {
-		// 1. player attacks enemy
-		enemyHealth -= playerAttack;
-		console.log(playerName + " attacked " + enemyName + ", who's health is now " + enemyHealth);
-		// 1a. check enemy's health
-		if (enemyHealth <= 0) {
-			window.alert(enemyName + " has died!");
-		} else {
-			window.alert(enemyName + " has " + enemyHealth + " health left.");
-		}
-		
-		// 2. enemy attacks player
-		playerHealth -= enemyAttack;
-		console.log(enemyName + " attacked "+ playerName + ", who's health is now " + playerHealth);
-		// 2a. check player health
-		if (playerHealth <= 0) {
-			window.alert(playerName + " has died!");
-		} else {
-			window.alert(playerName + " has " + playerHealth + " health left.");
+		while (enemyHealth > 0){
+			
+			// 1. player attacks enemy
+			enemyHealth -= playerAttack;
+			console.log(playerName + " attacked " + enemyName + ", who's health is now " + enemyHealth);
+			// - 1a. check enemy's health
+			if (enemyHealth <= 0) {
+				window.alert(enemyName + " has died!");
+			} else {
+				console.log(enemyName + " has " + enemyHealth + " health left.");
+			}
+			
+			// 2. enemy attacks player
+			playerHealth -= enemyAttack;
+			console.log(enemyName + " attacked "+ playerName + ", who's health is now " + playerHealth);
+			// - 2a. check player health
+			if (playerHealth <= 0) {
+				console.log(playerName + " has died!");
+			} else {
+				console.log(playerName + " has " + playerHealth + " health left.");
+			}	
 		}
 	
 	// player decides to skip
@@ -59,5 +60,7 @@ var fight = function(enemyName) {
 
 // main
 for (var i = 0; i < enemyNames.length; i++) {
-	fight(enemyNames[i]);
+	var pickedEnemyName = enemyNames[i];
+	enemyHealth = 50;
+	fight(pickedEnemyName);
 }
