@@ -60,7 +60,7 @@ var fight = function(enemyName) {
 				console.log(enemyName + " attacked "+ playerName + ", who's health is now " + playerHealth);
 				// - 2a. check player health
 				if (playerHealth <= 0) {
-					console.log(playerName + " has died!");
+					window.alert(playerName + " has died!");
 					break;
 				} else {
 					//console.log(playerName + " has " + playerHealth + " health left.");
@@ -101,34 +101,59 @@ var shop = function() {
 
 var endGame = function() {
 	// Alerts the player's total stats
+	window.alert("The game has now ended. Let's see how you did!");
+	// STATS
+	if (playerHealth > 0) {
+		window.alert("Great job, you've survived the game! You have a score of " + playerMoney + ".");
+	} else {
+		window.alert("You lost your robot in battle.");
+	}
 	// Ask the player if they would like to play again
+	var playAgainConfirm = window.confirm("Would you like to play again?");
+	
+	if (playAgainConfirm) {
+		// restart the game
+		startGame();
+	} else {
+		window.alert("Thank you for playing Robot Gladiators. Come back soon!");
+	}
 	// If yes, call startGame() to restart
 };
 
 var startGame = function() {
+	// reset player stats
+	playerHealth = 100;
+	playerAttack = 10;
+	playerMoney = 3;
 	
+	for (var i = 0; i < enemyNames.length; i++) {
+		// welcome players and display round number if their lifepoints are positive
+		if (playerHealth > 0) {
+			window.alert("Welcome to Robot Gladiators! Round " + (i + 1));
+			
+			// prompt player to visit shop, if they have money
+			if (playerMoney > 0) {
+				var goToShop = window.confirm("Would you like to visit the shop to buy upgrades or life refills?");
+				if (goToShop) {
+					shop();
+				}
+			} else {
+				window.alert("You have a balance of 0 coins, which is not enough to access the shop. Try again after winning a battle!");
+			}
+			
+			// initiate fight
+			var pickedEnemyName = enemyNames[i];
+			enemyHealth = 50;
+			fight(pickedEnemyName);
+			
+		} else {
+			// player's robot died, end the loop
+			break;
+		}
+	}
+	
+	endGame();
 };
 
-// main
-for (var i = 0; i < enemyNames.length; i++) {
-	// welcome players and display round number if their lifepoints are positive
-	if (playerHealth > 0) {
-		window.alert("Welcome to Robot Gladiators! Round " + (i + 1));
-		
-		// prompt player to visit shop, if they have money
-		if (playerMoney > 0) {
-			var goToShop = window.confirm("Would you like to visit the shop to buy upgrades or life refills?");
-			if (goToShop) {
-				shop();
-			}
-		} else {
-			window.alert("You have a balance of 0 coins, which is not enough to access the shop. Try again after winning a battle!");
-		}
-	} else {
-		window.alert("You have lost your robot battle. Game Over!");
-		break;
-	}
-	var pickedEnemyName = enemyNames[i];
-	enemyHealth = 50;
-	fight(pickedEnemyName);
-}
+// MAIN - Start game when page loads
+startGame();
