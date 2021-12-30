@@ -1,7 +1,7 @@
 var playerName = window.prompt("What is your robot's name?");
 var playerHealth = 100;
 var playerAttack = 10;
-var playerMoney = 10;
+var playerMoney = 5;
 
 var enemyNames = ["Roberto", "Amy Android", "Robo Trumble"];
 var enemyHealth = 50;
@@ -14,7 +14,7 @@ var fight = function(enemyName) {
 	
 	// player decides to fight
 	if (fightOrSkip === "fight") {
-		while (enemyHealth > 0){
+		while (enemyHealth > 0 && playerHealth > 0){
 			
 			// 1. player attacks enemy
 			enemyHealth -= playerAttack;
@@ -22,8 +22,10 @@ var fight = function(enemyName) {
 			// - 1a. check enemy's health
 			if (enemyHealth <= 0) {
 				window.alert(enemyName + " has died!");
+				playerMoney += 5;
+				break;
 			} else {
-				console.log(enemyName + " has " + enemyHealth + " health left.");
+				//console.log(enemyName + " has " + enemyHealth + " health left.");
 			}
 			
 			// 2. enemy attacks player
@@ -32,8 +34,9 @@ var fight = function(enemyName) {
 			// - 2a. check player health
 			if (playerHealth <= 0) {
 				console.log(playerName + " has died!");
+				break;
 			} else {
-				console.log(playerName + " has " + playerHealth + " health left.");
+				//console.log(playerName + " has " + playerHealth + " health left.");
 			}	
 		}
 	
@@ -43,7 +46,7 @@ var fight = function(enemyName) {
 										 "\n\nThis will cost 2 coins, and you currently have " + playerMoney + ".");
 		// skip and remove coins (penalty)
 		if (confirmSkip) {
-			playerMoney -= 2;
+			playerMoney -= 3;
 			window.alert(playerName + " has skipped the battle." +
 						 "\nCoins left: " + playerMoney);
 		// not skip and go back to the top of fight, no penalty
@@ -60,6 +63,12 @@ var fight = function(enemyName) {
 
 // main
 for (var i = 0; i < enemyNames.length; i++) {
+	if (playerHealth > 0) {
+		window.alert("Welcome to Robot Gladiators! Round " + (i + 1));
+	} else {
+		window.alert("You have lost your robot battle. Game Over!");
+		break;
+	}
 	var pickedEnemyName = enemyNames[i];
 	enemyHealth = 50;
 	fight(pickedEnemyName);
