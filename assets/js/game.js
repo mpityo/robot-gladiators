@@ -1,7 +1,8 @@
 var playerName = window.prompt("What is your robot's name?");
-var playerHealth = 100;
+var MAXPLAYERHEALTH = 100;
+var playerHealth = MAXPLAYERHEALTH;
 var playerAttack = 10;
-var playerMoney = 0;
+var playerMoney = 5;
 
 var enemyNames = ["Roberto", "Amy Android", "Robo Trumble"];
 var enemyHealth = 50;
@@ -66,6 +67,11 @@ var fight = function(enemyName) {
 					//console.log(playerName + " has " + playerHealth + " health left.");
 				}
 			
+		// END the game (mainly for testing and getting out quick)
+		// REMOVE in end test
+		} else if (fightOrSkip === "!end" || "!e") {
+			playerHealth = 0;
+			
 		// player doesn't enter a valid option
 		} else {
 			window.alert("You need to choose a valid option. Try again!");
@@ -84,12 +90,53 @@ var shop = function() {
 										"\nPlease enter one: 'REFILL', 'UPGRADE', or 'LEAVE' to make a choice.");
 	if (selection) {
 		var shopSelection = selection.toLowerCase();
+		
+		// REFILL health
 		if (shopSelection === "refill" || shopSelection === "refil" || shopSelection === "r") {
+			// calculate how much player's health refill will be (40% of max health)
+			var refillAmount = (MAXPLAYERHEALTH * .40);
+			// calculate cost of upgrade, which is 10% of refill amount
+			var costForRefill = refillAmount * .10;
+			
+			var confirmRefill = window.confirm("You may refill " + refillAmount + " points of health (or top off to " + MAXPLAYERHEALTH + " if within " + refillAmount + " points) for " + costForRefill + " coins." +
+												"\n\nWould you like to?" +
+												"\nCurrent health: " + playerHealth + "" +
+												"\nCurrent coins: " + playerMoney);
+			// if player confirms to refill their health
+			if (confirmRefill) {
+				if (playerHealth != MAXPLAYERHEALTH) {
+					// check to make sure player has enough money to cover the refill (defined above, variable)
+					if (playerMoney >= costForRefill) {
+						// if current health + refill amount will go over the max health, make health = max
+						if ((playerHealth+refillAmount) > MAXPLAYERHEALTH) {
+							playerHealth = MAXPLAYERHEALTH;
+						} else {
+							playerHealth += refillAmount;
+						}
+						playerMoney -= costForRefill;
+						window.alert("Health has been refilled." +
+									"\n\nCurrent amount of health: " + playerHealth +"" +
+									"\nCurrent amount of coins: " + playerMoney);
+					} else {
+						window.alert("You do not have enough coins to purchase this refill!");
+					}
+				} else {
+					window.alert("You already have the maximum amount of health. No coins were deducted.");
+				}
+			} else {
+			}
+			window.alert("Going back to main shop menu.");
 			shop();
+		
+		// UPGRADE attack
 		} else if (shopSelection === "upgrade" || shopSelection === "u") {
 			shop();
+		
+		// LEAVE shop
 		} else if (shopSelection === "leave" || shopSelection === "l") {
 			window.alert("Thank you for visiting the shop. Goodbye!");
+		
+		// user did not enter a valid response
 		} else {
 			window.alert("Please enter a valid response.");
 			shop();
@@ -117,14 +164,13 @@ var endGame = function() {
 	} else {
 		window.alert("Thank you for playing Robot Gladiators. Come back soon!");
 	}
-	// If yes, call startGame() to restart
 };
 
 var startGame = function() {
 	// reset player stats
-	playerHealth = 100;
+	playerHealth = MAXPLAYERHEALTH;
 	playerAttack = 10;
-	playerMoney = 3;
+	playerMoney = 5;
 	
 	for (var i = 0; i < enemyNames.length; i++) {
 		// welcome players and display round number if their lifepoints are positive
@@ -151,7 +197,7 @@ var startGame = function() {
 			break;
 		}
 	}
-	
+	// ends the game whether all enemies have been fought or player's robot died
 	endGame();
 };
 
