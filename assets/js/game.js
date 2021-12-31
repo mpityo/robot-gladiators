@@ -146,8 +146,16 @@ var endGame = function() {
 	}
 };
 
+var getPlayerName = function() {
+	var name = "";
+	while (name === "" || name === null) {
+		name = window.prompt("What is your robot's name?");
+	}
+	return name;
+}
+
 var playerInfo = {
-	name: window.prompt("What is your robot's name?"),
+	name: getPlayerName(),
 	maxHealth: 100,
 	health: this.maxHealth,
 	attack: 10,
