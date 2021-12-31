@@ -87,11 +87,12 @@ LIFE REFILLS - 5 coins/ea
 */
 var shop = function() {
 	var selection = window.prompt("Would you like to REFILL your health, UPGRADE your attack or LEAVE the store?" +
-										"\nPlease enter one: 'REFILL', 'UPGRADE', or 'LEAVE' to make a choice.");
+										"\nPlease enter one: 'REFILL', 'UPGRADE', or 'LEAVE' to make a choice." +
+										"\n\nCurrent coin amount: " + playerMoney);
 	if (selection) {
 		var shopSelection = selection.toLowerCase();
 		
-		// REFILL health
+	// REFILL health
 		if (shopSelection === "refill" || shopSelection === "refil" || shopSelection === "r") {
 			// calculate how much player's health refill will be (40% of max health)
 			var refillAmount = (MAXPLAYERHEALTH * .40);
@@ -128,15 +129,29 @@ var shop = function() {
 			window.alert("Going back to main shop menu.");
 			shop();
 		
-		// UPGRADE attack
+	// UPGRADE attack
 		} else if (shopSelection === "upgrade" || shopSelection === "u") {
+			var confirmUpgrade = window.confirm("Your current attack is " + playerAttack + "." +
+												"\nYou may add 4 for 3 coins." +
+												"\n\nWould you like to?" +
+												"\nCurrent coins: " + playerMoney);
+			if (confirmUpgrade) {
+				if (playerMoney >= 3) {
+					playerAttack += 4;
+					playerMoney -= 3;
+					window.alert("Your attack has been increased to " + playerAttack + ".");
+				} else {
+					window.alert("You don't have enough coins for this upgrade!");
+				}
+			}
+			window.alert("Going back to main shop menu.");
 			shop();
 		
-		// LEAVE shop
+	// LEAVE shop
 		} else if (shopSelection === "leave" || shopSelection === "l") {
 			window.alert("Thank you for visiting the shop. Goodbye!");
 		
-		// user did not enter a valid response
+	// user did not enter a valid response
 		} else {
 			window.alert("Please enter a valid response.");
 			shop();
