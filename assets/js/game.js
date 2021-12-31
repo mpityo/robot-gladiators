@@ -8,6 +8,12 @@ var enemyNames = ["Roberto", "Amy Android", "Robo Trumble"];
 var enemyHealth = 50;
 var enemyAttack = 12;
 
+var randomNumber = function(min, max) {
+	var value = Math.floor(Math.random() * (max - min + 1)) + min;
+
+	return value;
+};
+
 var fight = function(enemyName) {
 	// fight variable only displays "fight or skip" once per match
 	var fightVariable = 0;
@@ -26,7 +32,7 @@ var fight = function(enemyName) {
 			if (confirmSkip) {
 				// skip and remove coins (penalty), after confirming available coins
 				if (playerMoney >= 3) {
-					playerMoney -= 3;
+					playerMoney = Math.max(0, playerMoney - 3);
 					window.alert(playerName + " has skipped the battle." +
 								 "\nCoins left: " + playerMoney);
 					break;
@@ -43,26 +49,26 @@ var fight = function(enemyName) {
 		} else if (fightOrSkip === "fight") {
 				
 			// 1. player attacks enemy
-			enemyHealth -= playerAttack;
+			// -- generate random damage value based on player's attack
+			var damage = randomNumber(playerAttack - 3, playerAttack);
+			enemyHealth = Math.max(0, enemyHealth - damage);
 			console.log(playerName + " attacked " + enemyName + ", who's health is now " + enemyHealth);
 			// - 1a. check enemy's health
 			if (enemyHealth <= 0) {
 				window.alert(enemyName + " has died!");
 				playerMoney += 5;
 				break;
-			} else {
-				//console.log(enemyName + " has " + enemyHealth + " health left.");
 			}
 			
 			// 2. enemy attacks player
-			playerHealth -= enemyAttack;
+			// -- generate random damage value based on enemy's attack
+			var damage = randomNumber(enemyAttack - 3, enemyAttack);
+			playerHealth = Math.max(0, playerHealth-damage);
 			console.log(enemyName + " attacked "+ playerName + ", who's health is now " + playerHealth);
 			// - 2a. check player health
 			if (playerHealth <= 0) {
 				window.alert(playerName + " has died!");
 				break;	
-			} else {
-				//console.log(playerName + " has " + playerHealth + " health left.");
 			}
 			
 		// END the game (mainly for testing and getting out quick)
@@ -106,12 +112,8 @@ var shop = function() {
 				if (playerHealth != MAXPLAYERHEALTH) {
 					// check to make sure player has enough money to cover the refill (defined above, variable)
 					if (playerMoney >= costForRefill) {
-						// if current health + refill amount will go over the max health, make health = max
-						if ((playerHealth+refillAmount) > MAXPLAYERHEALTH) {
-							playerHealth = MAXPLAYERHEALTH;
-						} else {
-							playerHealth += refillAmount;
-						}
+						// set health either to max player health or current health + refill amount, whichever is larger
+						playerHealth = Math.max(MAXPLAYERHEALTH, (playerHealth+refillAmount))
 						playerMoney -= costForRefill;
 						window.alert("Health has been refilled." +
 									"\n\nCurrent amount of health: " + playerHealth);
@@ -200,7 +202,7 @@ var startGame = function() {
 			
 			// initiate fight
 			var pickedEnemyName = enemyNames[i];
-			enemyHealth = 50;
+			enemyHealth = randomNumber(40, 60);
 			fight(pickedEnemyName);
 			
 		} else {
