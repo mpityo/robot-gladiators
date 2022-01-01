@@ -10,8 +10,8 @@ var fight0rSkip = function(enemy) {
 	if (prompt)
 		var promptFight = prompt.toLowerCase();
 
-	// player decides to skip
-	if (promptFight === "skip" || !prompt) {
+	// player decides to skip or clicks "cancel"
+	if (promptFight === "skip" || prompt === null) {
 		var confirmSkip = window.confirm("Are you sure you want to skip this battle with " + enemy.name + "?" + 
 										 "\n\nThis will cost 3 coins, and you currently have " + playerInfo.money + ".");
 		// player selects "yes" to skip fight
@@ -31,8 +31,8 @@ var fight0rSkip = function(enemy) {
 		}
 		return true;
 
-	// player decides to fight
-	} else if (promptFight === "fight") {
+	// player decides to fight or click "okay"
+	} else if (promptFight === "fight" || prompt === "") {
 		 return true;
 
 	// player doesn't enter a valid option
@@ -44,31 +44,41 @@ var fight0rSkip = function(enemy) {
 }
 
 var fight = function(enemy) {
+	// change the order of turn randomly
+	var isPlayerTurn = true;
+	if (Math.random() > 0.5)
+		isPlayerTurn = false;
+
 	if (fight0rSkip(enemy)) {
 		while (enemy.health > 0 && playerInfo.health > 0){
-			// 1. player attacks enemy
-			// -- generate random damage value based on player's attack
-			var damage = randomNumber(playerInfo.attack - 3, playerInfo.attack);
-			enemy.health = Math.max(0, enemy.health - damage);
-			console.log(playerInfo.name + " attacked " + enemy.name + " for " + damage +" points." +
-						"\n"+enemy.name + " is down to " + enemy.health + " health.");
-			// - 1a. check enemy's health
-			if (enemy.health <= 0) {
-				window.alert(enemy.name + " has died!");
-				playerInfo.money += 5;
-				break;
+			if (isPlayerTurn) {
+				// 1. player attacks enemy
+				// -- generate random damage value based on player's attack
+				var damage = randomNumber(playerInfo.attack - 3, playerInfo.attack);
+				enemy.health = Math.max(0, enemy.health - damage);
+				console.log(playerInfo.name + " attacked " + enemy.name + " for " + damage +" points." +
+							"\n"+enemy.name + " is down to " + enemy.health + " health.");
+				// - 1a. check enemy's health
+				if (enemy.health <= 0) {
+					window.alert(enemy.name + " has died!");
+					playerInfo.money += 5;
+					break;
+				}
+				isPlayerTurn = false;
 			}
-			
-			// 2. enemy attacks player
-			// -- generate random damage value based on enemy's attack
-			var damage = randomNumber(enemy.attack - 3, enemy.attack);
-			playerInfo.health = Math.max(0, playerInfo.health-damage);
-			console.log(enemy.name + " attacked " + playerInfo.name + " for " + damage +" points." +
-						"\n"+playerInfo.name + " is down to " + playerInfo.health + " health.");
-			// - 2a. check player health
-			if (playerInfo.health <= 0) {
-				window.alert(playerInfo.name + " has died!");
-				break;	
+			else {
+				// 2. enemy attacks player
+				// -- generate random damage value based on enemy's attack
+				var damage = randomNumber(enemy.attack - 3, enemy.attack);
+				playerInfo.health = Math.max(0, playerInfo.health-damage);
+				console.log(enemy.name + " attacked " + playerInfo.name + " for " + damage +" points." +
+							"\n"+playerInfo.name + " is down to " + playerInfo.health + " health.");
+				// - 2a. check player health
+				if (playerInfo.health <= 0) {
+					window.alert(playerInfo.name + " has died!");
+					break;	
+				}
+				isPlayerTurn = true;
 			}
 		}
 	}
