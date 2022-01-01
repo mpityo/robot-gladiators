@@ -4,40 +4,48 @@ var randomNumber = function(min, max) {
 	return value;
 };
 
-var fight = function(enemy) {
-	// fight variable only displays "fight or skip" once per match
-	var fightVariable = 0;
-	
-	while (enemy.health > 0 && playerInfo.health > 0){
-		// prompt user to either fight or skip the battle
-		if (fightVariable === 0) {
-			var promptFight = window.prompt("Would you like to FIGHT or SKIP this battle?");
-			var fightOrSkip = promptFight.toLowerCase();
-			fightVariable = 1;
-		}
-		// player decides to skip
-		if (fightOrSkip === "skip") {
-			var confirmSkip = window.confirm("Are you sure you want to skip this battle with " + enemy.name + "?" + 
-											 "\n\nThis will cost 3 coins, and you currently have " + playerInfo.money + ".");
-			if (confirmSkip) {
-				// skip and remove coins (penalty), after confirming available coins
-				if (playerInfo.money >= 3) {
-					playerInfo.money = Math.max(0, playerInfo.money - 3);
-					window.alert(playerInfo.name + " has skipped the battle." +
-								 "\nCoins left: " + playerInfo.money);
-					break;
-				} else {
-					window.alert("You don't have enough money to skip! Battle will commence with " + enemy.name + ".");
-				}
-			// not skip and fight, no penalty
-			} else	{
-				window.alert(playerInfo.name + " has chosen not to skip the battle. Battle will commence with " + enemy.name + ".");
+var fight0rSkip = function(enemy) {
+	// prompt user to either fight or skip the battle
+	var prompt = window.prompt("Would you like to FIGHT or SKIP this battle?");
+	if (prompt)
+		var promptFight = prompt.toLowerCase();
+
+	// player decides to skip
+	if (promptFight === "skip" || !prompt) {
+		var confirmSkip = window.confirm("Are you sure you want to skip this battle with " + enemy.name + "?" + 
+										 "\n\nThis will cost 3 coins, and you currently have " + playerInfo.money + ".");
+		// player selects "yes" to skip fight
+		 if (confirmSkip) {
+			// skip and remove coins (penalty), after confirming available coins
+			if (playerInfo.money >= 3) {
+				playerInfo.money = Math.max(0, playerInfo.money - 3);
+				window.alert(playerInfo.name + " has skipped the battle." +
+							 "\nCoins left: " + playerInfo.money);
+				return false;
+			} else {
+				window.alert("You don't have enough money to skip! Battle will commence with " + enemy.name + ".");
 			}
-			fightOrSkip = "fight";
-			
-		// player decides to fight
-		} else if (fightOrSkip === "fight") {
-				
+		// player selects "no" and decides not to skip and fight, no penalty
+		} else	{
+			window.alert(playerInfo.name + " has chosen not to skip the battle. Battle will commence with " + enemy.name + ".");
+		}
+		return true;
+
+	// player decides to fight
+	} else if (promptFight === "fight") {
+		 return true;
+
+	// player doesn't enter a valid option
+	} else {
+		window.alert("You need to choose a valid option. Try again!");
+		return fight0rSkip(enemy);
+	}
+
+}
+
+var fight = function(enemy) {
+	if (fight0rSkip(enemy)) {
+		while (enemy.health > 0 && playerInfo.health > 0){
 			// 1. player attacks enemy
 			// -- generate random damage value based on player's attack
 			var damage = randomNumber(playerInfo.attack - 3, playerInfo.attack);
@@ -62,11 +70,6 @@ var fight = function(enemy) {
 				window.alert(playerInfo.name + " has died!");
 				break;	
 			}
-			
-		// player doesn't enter a valid option
-		} else {
-			window.alert("You need to choose a valid option. Try again!");
-			fightVariable = 0;
 		}
 	}
 };
@@ -146,16 +149,8 @@ var endGame = function() {
 	}
 };
 
-var getPlayerName = function() {
-	var name = "";
-	while (name === "" || name === null) {
-		name = window.prompt("What is your robot's name?");
-	}
-	return name;
-}
-
 var playerInfo = {
-	name: getPlayerName(),
+	name: window.prompt("What is your robot's name?"),
 	maxHealth: 100,
 	health: this.maxHealth,
 	attack: 10,
