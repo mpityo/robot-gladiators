@@ -87,7 +87,7 @@ var shop = function() {
 		var shopSelection = selection.toLowerCase();
 		
 	// REFILL health
-		if (shopSelection === "refill" || shopSelection === "refil" || shopSelection === "r") {
+		if (shopSelection === "refill" || shopSelection === "refil" || shopSelection === "r" || shopSelection === "1") {
 			// calculate how much player's health refill will be (40% of max health)
 			var refillAmount = (playerInfo.maxHealth * .40);
 			// calculate cost of upgrade, which is 10% of refill amount
@@ -105,7 +105,7 @@ var shop = function() {
 			shop();
 		
 	// UPGRADE attack
-		} else if (shopSelection === "upgrade" || shopSelection === "u") {
+		} else if (shopSelection === "upgrade" || shopSelection === "u" || shopSelection === "2") {
 			var confirmUpgrade = window.confirm("Your current attack is " + playerInfo.attack + "." +
 												"\nYou may add 4 for 3 coins." +
 												"\n\nWould you like to?" +
@@ -117,7 +117,7 @@ var shop = function() {
 			shop();
 		
 	// LEAVE shop
-		} else if (shopSelection === "leave" || shopSelection === "l") {
+		} else if (shopSelection === "leave" || shopSelection === "l" || shopSelection === "3") {
 			window.alert("Thank you for visiting the shop. Goodbye!");
 		
 	// user did not enter a valid response
