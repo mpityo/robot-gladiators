@@ -145,6 +145,28 @@ var endGame = function() {
 	window.alert("The game has now ended. Let's see how you did!");
 	if (playerInfo.health > 0) {
 		window.alert("Great job, you've survived the game! You have a score of " + playerInfo.money + ".");
+		
+		// find and replace high score if needed
+		var currentHighScore = [parseInt(localStorage.getItem("High Score")), localStorage.getItem("Robot Name")];
+		// if there's an entry in the high scores already
+		if (currentHighScore[0]) {
+			if (playerInfo.money > currentHighScore[0]) {
+				window.alert("Congratulations, you have a new high score!" +
+							"\n\nOld high score: " + currentHighScore[0] + " by " + currentHighScore[1] + "" +
+							"\nNew high score: " + playerInfo.money + " by " + playerInfo.name);
+				localStorage.setItem("High Score", playerInfo.money);
+				localStorage.setItem("Robot Name", playerInfo.name);
+			} else {
+				window.alert("Sorry, you didn't beat the high score of " + currentHighScore[0] + " by " + currentHighScore[1] + "" +
+							"\nTry again!");
+			}
+		// no entry in high scores. Display different text
+		} else {
+			window.alert("You are the first entry to the high score! Score of " + playerInfo.money + " has been saved.");
+			localStorage.setItem("High Score", playerInfo.money);
+			localStorage.setItem("Robot Name", playerInfo.name);
+		}
+
 	} else {
 		window.alert("You lost your robot in battle.");
 	}
@@ -174,7 +196,7 @@ var playerInfo = {
 		if (this.health != this.maxHealth) {
 			// check to make sure player has enough money to cover the refill (defined above, variable)
 			if (this.money >= costForRefill) {
-				// set health either to max player health or current health + refill amount, whichever is larger
+				// set health either to max player health or current health + refill amount, whichever is smaller
 				this.health = Math.min(this.maxHealth, (this.health+refillAmount))
 				this.money -= costForRefill;
 				window.alert("Health has been refilled." +
